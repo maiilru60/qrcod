@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Изменено: добавлено 'maximum-scale=1.0, user-scalable=no' для лучшей работы на мобильных -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wedding PhotoBooth • Илья & Алина</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -267,7 +268,6 @@
             box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
         }
 
-        /* Улучшенная камера - без обрезки */
         .camera-frame-luxury {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(15px);
@@ -278,16 +278,14 @@
             position: relative;
         }
 
-        /* Полноэкранная камера для лучшего качества */
         #video-stream {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transform-origin: center;
-            transition: transform 0.3s ease;
+            /* Изменено: transition теперь не нужен, так как зум нативный */
         }
 
-        /* Новый стиль для зеркального отображения селфи-камеры */
         #video-stream.selfie-mirror {
             transform: scaleX(-1);
         }
@@ -351,12 +349,10 @@
             backdrop-filter: blur(20px);
         }
         
-        /* Плавное появление/исчезновение галереи */
         #gallery-wrapper {
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
 
-        /* Адаптивность для всех устройств */
         @media (max-width: 640px) {
             .camera-frame-luxury {
                 border-radius: 20px;
@@ -376,17 +372,15 @@
 
         @media (max-width: 480px) {
             .elegant-glass {
-                padding: 1.5rem; /* Уменьшаем отступы на маленьких экранах */
+                padding: 1.5rem;
             }
             
-            /* Ширина теперь управляется родительским контейнером */
-            
             .welcome-entrance h1 {
-                font-size: 3.5rem; /* Уменьшаем заголовок */
+                font-size: 3.5rem;
             }
 
             .welcome-entrance .mb-10 {
-                margin-bottom: 2rem; /* Уменьшаем отступы */
+                margin-bottom: 2rem;
             }
 
             .camera-controls-elegant > div {
@@ -394,7 +388,6 @@
             }
         }
 
-        /* Индикатор качества записи */
         .quality-indicator {
             background: linear-gradient(135deg, #22c55e, #16a34a);
             color: white;
@@ -528,7 +521,7 @@
                 <!-- Capture Button -->
                 <button id="capture-photo" class="capture-pulse w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-xl disabled:opacity-50">
                     <svg id="camera-icon" class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.65-.07.97c0 .33.03.65.07.97L2.46 14.4c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59-1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/>
+                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.65-.07.97c0 .33.03.65.07.97L2.46 14.4c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25-1.17-.59-1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/>
                     </svg>
                     <div id="capture-loading" class="elegant-spinner hidden"></div>
                 </button>
@@ -587,7 +580,7 @@
                 this.facingMode = 'environment';
                 this.userName = '';
                 this.photoCount = 0;
-                this.maxPhotos = 20; // Ограничение до 20 фото
+                this.maxPhotos = 20;
                 this.isCapturing = false;
                 this.zoomLevel = 1;
                 this.maxZoom = 8;
@@ -596,7 +589,7 @@
 
                 this.initElements();
                 this.bindEvents();
-                this.loadInitialState(); // Загружаем состояние при запуске
+                this.loadInitialState();
             }
 
             initElements() {
@@ -653,17 +646,14 @@
                 this.closeCameraBtn.addEventListener('click', () => this.closeCamera());
                 this.galleryToggle.addEventListener('click', () => this.toggleGallery());
 
-                // Zoom controls
                 this.zoomSlider.addEventListener('input', (e) => this.handleZoom(parseFloat(e.target.value)));
 
-                // Enter key support
                 this.guestNameInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !this.startSessionBtn.disabled) {
                         this.startSession();
                     }
                 });
 
-                // Touch zoom for mobile
                 let initialDistance = null;
                 this.videoStream.addEventListener('touchstart', (e) => {
                     if (e.touches.length === 2) {
@@ -675,7 +665,7 @@
                             touch1.clientY - touch2.clientY
                         );
                     }
-                });
+                }, { passive: false });
 
                 this.videoStream.addEventListener('touchmove', (e) => {
                     if (e.touches.length === 2 && initialDistance) {
@@ -695,7 +685,7 @@
                         this.zoomSlider.value = newZoom;
                         initialDistance = currentDistance;
                     }
-                });
+                }, { passive: false });
 
                 this.videoStream.addEventListener('touchend', () => {
                     initialDistance = null;
@@ -715,7 +705,6 @@
                 if (!this.userName) return;
 
                 try {
-                    // Сброс состояния для новой сессии, если имя пользователя изменилось
                     const lastUser = localStorage.getItem('lastWeddingUser');
                     if (lastUser !== this.userName) {
                         localStorage.setItem(`weddingPhotos_${lastUser}`, '[]');
@@ -728,7 +717,7 @@
                     await this.startCamera();
                     this.welcomeScreen.classList.add('hidden');
                     this.cameraScreen.classList.remove('hidden');
-                    this.loadUserPhotos(); // Загрузка фото для текущего пользователя
+                    this.loadUserPhotos();
                 } catch (error) {
                     console.error('Failed to start camera:', error);
                     this.showError('Не удалось запустить камеру');
@@ -755,11 +744,7 @@
                     this.stream = await navigator.mediaDevices.getUserMedia(constraints);
                     this.videoStream.srcObject = this.stream;
                     
-                    if (this.facingMode === 'user') {
-                        this.videoStream.classList.add('selfie-mirror');
-                    } else {
-                        this.videoStream.classList.remove('selfie-mirror');
-                    }
+                    this.videoStream.style.transform = this.facingMode === 'user' ? 'scaleX(-1)' : '';
                     
                     await new Promise((resolve) => {
                         this.videoStream.onloadedmetadata = resolve;
@@ -811,27 +796,28 @@
             }
 
             async checkZoomSupport(track) {
-                if (!track) {
-                    this.supportsZoom = false;
+                this.zoomControls.style.display = 'none'; // Скрыть по умолчанию
+                this.supportsZoom = false;
+
+                if (!track || typeof track.getCapabilities !== 'function') {
+                    console.log('Zoom capabilities not checkable.');
                     return;
                 }
                 try {
                     const capabilities = track.getCapabilities();
-                    
                     if (capabilities.zoom) {
                         this.supportsZoom = true;
                         this.maxZoom = Math.min(capabilities.zoom.max || 8, 8);
                         this.zoomSlider.min = capabilities.zoom.min || 1;
                         this.zoomSlider.max = this.maxZoom;
                         this.zoomSlider.step = capabilities.zoom.step || 0.1;
-                        console.log(`Zoom supported: [${this.zoomSlider.min}-${this.zoomSlider.max}]`);
+                        this.zoomControls.style.display = 'block'; // Показать, если есть поддержка
+                        console.log(`Zoom supported: [${this.zoomSlider.min}-${this.maxZoom}]`);
                     } else {
-                        this.supportsZoom = false;
                         console.log('Native zoom not supported.');
                     }
                 } catch (error) {
                     console.log('Zoom capabilities check failed:', error);
-                    this.supportsZoom = false;
                 }
             }
 
@@ -841,23 +827,24 @@
                 this.zoomValue.textContent = `Приближение: ${this.zoomLevel.toFixed(1)}×`;
             }
 
+            // ИСПРАВЛЕНО: Эта функция была переписана для использования только нативного зума,
+            // чтобы избежать зависаний на iOS. CSS `transform: scale()` был удален.
             applyZoom() {
-                if (!this.stream) return;
+                if (!this.stream || !this.supportsZoom) return;
                 const track = this.stream.getVideoTracks()[0];
-                const mirrorTransform = this.facingMode === 'user' ? 'scaleX(-1)' : '';
 
-                if (this.supportsZoom) {
-                    try {
-                        track.applyConstraints({
-                            advanced: [{ zoom: this.zoomLevel }]
-                        });
-                        this.videoStream.style.transform = mirrorTransform;
-                    } catch (error) {
-                        console.error('Native zoom failed:', error);
-                        this.videoStream.style.transform = `${mirrorTransform} scale(${this.zoomLevel})`;
-                    }
-                } else {
-                    this.videoStream.style.transform = `${mirrorTransform} scale(${this.zoomLevel})`;
+                // Зеркальное отображение для селфи-камеры
+                this.videoStream.style.transform = this.facingMode === 'user' ? 'scaleX(-1)' : '';
+
+                try {
+                    // Используем только нативный API для зума
+                    track.applyConstraints({
+                        advanced: [{ zoom: this.zoomLevel }]
+                    });
+                } catch (error) {
+                    console.error('Native zoom failed:', error);
+                    // Не делаем откат к CSS-масштабированию, так как это вызывает зависание.
+                    // Если нативный зум не сработал, лучше не делать ничего, чем ломать приложение.
                 }
             }
 
@@ -903,7 +890,7 @@
                 this.showInstantCapture();
 
                 try {
-                    if (this.imageCapture && this.supportsZoom) {
+                    if (this.imageCapture) {
                         console.log('Capturing with ImageCapture API');
                         const photoBlob = await this.imageCapture.takePhoto();
                         const imageBitmap = await createImageBitmap(photoBlob);
@@ -918,7 +905,8 @@
                         this.canvas.width = videoWidth;
                         this.canvas.height = videoHeight;
 
-                        const scale = this.zoomLevel;
+                        // Логика зума при захвате через canvas остается, так как она производительная
+                        const scale = this.supportsZoom ? 1 : this.zoomLevel; // Если зум не нативный, применяем его на canvas
                         const sourceWidth = videoWidth / scale;
                         const sourceHeight = videoHeight / scale;
                         const sourceX = (videoWidth - sourceWidth) / 2;
@@ -955,6 +943,7 @@
                 document.body.appendChild(flash);
                 
                 setTimeout(() => {
+                    flash.style.transition = 'opacity 0.2s ease-out';
                     flash.style.opacity = '0';
                     setTimeout(() => document.body.removeChild(flash), 200);
                 }, 100);
