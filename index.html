@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wedding PhotoBooth • Илья & Алина</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -219,54 +219,7 @@
             box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3);
         }
 
-        .zoom-elegant {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 20px;
-        }
-
-        .zoom-slider {
-            appearance: none;
-            background: transparent;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .zoom-slider::-webkit-slider-track {
-            background: rgba(255, 255, 255, 0.3);
-            height: 8px;
-            border-radius: 4px;
-        }
-
-        .zoom-slider::-webkit-slider-thumb {
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, #f43f5e, #fbbf24);
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid white;
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
-        }
-
-        .zoom-slider::-moz-range-track {
-            background: rgba(255, 255, 255, 0.3);
-            height: 8px;
-            border-radius: 4px;
-            border: none;
-        }
-
-        .zoom-slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, #f43f5e, #fbbf24);
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid white;
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
-        }
-
+        /* Улучшенная камера - без обрезки */
         .camera-frame-luxury {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(15px);
@@ -277,15 +230,14 @@
             position: relative;
         }
 
+        /* Полноэкранная камера для лучшего качества */
         #video-stream {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform-origin: center;
-            transition: transform 0.3s ease;
-            touch-action: none; /* Prevents default browser touch actions like page zoom */
         }
 
+        /* Новый стиль для зеркального отображения селфи-камеры */
         #video-stream.selfie-mirror {
             transform: scaleX(-1);
         }
@@ -349,18 +301,16 @@
             backdrop-filter: blur(20px);
         }
         
+        /* Плавное появление/исчезновение галереи */
         #gallery-wrapper {
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
 
+        /* Адаптивность для всех устройств */
         @media (max-width: 640px) {
             .camera-frame-luxury {
                 border-radius: 20px;
                 border-width: 2px;
-            }
-            
-            .zoom-elegant {
-                width: 280px;
             }
             
             .photo-mini {
@@ -372,15 +322,17 @@
 
         @media (max-width: 480px) {
             .elegant-glass {
-                padding: 1.5rem;
+                padding: 1.5rem; /* Уменьшаем отступы на маленьких экранах */
             }
             
+            /* Ширина теперь управляется родительским контейнером */
+            
             .welcome-entrance h1 {
-                font-size: 3.5rem;
+                font-size: 3.5rem; /* Уменьшаем заголовок */
             }
 
             .welcome-entrance .mb-10 {
-                margin-bottom: 2rem;
+                margin-bottom: 2rem; /* Уменьшаем отступы */
             }
 
             .camera-controls-elegant > div {
@@ -388,6 +340,7 @@
             }
         }
 
+        /* Индикатор качества записи */
         .quality-indicator {
             background: linear-gradient(135deg, #22c55e, #16a34a);
             color: white;
@@ -486,28 +439,6 @@
             <video id="video-stream" autoplay playsinline muted></video>
         </div>
 
-        <!-- Zoom Controls -->
-        <div id="zoom-controls" class="absolute left-1/2 bottom-32 transform -translate-x-1/2 w-11/12 max-w-sm z-20">
-            <div class="zoom-elegant p-4 rounded-2xl w-full">
-                <div class="flex items-center space-x-4">
-                    <span class="text-white text-sm font-bold">1×</span>
-                    <input 
-                        type="range" 
-                        id="zoom-slider" 
-                        min="1" 
-                        max="8" 
-                        value="1" 
-                        step="0.1" 
-                        class="flex-1 zoom-slider"
-                    >
-                    <span class="text-white text-sm font-bold">8×</span>
-                </div>
-                <div class="text-center mt-2">
-                    <span id="zoom-value" class="text-white text-xs font-medium">Приближение: 1.0×</span>
-                </div>
-            </div>
-        </div>
-
         <!-- Bottom Controls -->
         <div class="absolute bottom-0 left-0 right-0 camera-controls-elegant p-6 z-30">
             <div class="flex items-center justify-center gap-8">
@@ -521,7 +452,7 @@
                 <!-- Capture Button -->
                 <button id="capture-photo" class="capture-pulse w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-xl disabled:opacity-50">
                     <svg id="camera-icon" class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.65-.07.97c0 .33.03.65.07.97L2.46 14.4c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l-.37-2.65c.63-.25-1.17-.59-1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/>
+                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.65-.07.97c0 .33.03.65.07.97L2.46 14.4c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59-1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/>
                     </svg>
                     <div id="capture-loading" class="elegant-spinner hidden"></div>
                 </button>
@@ -580,24 +511,23 @@
                 this.facingMode = 'environment';
                 this.userName = '';
                 this.photoCount = 0;
-                this.maxPhotos = 20;
+                this.maxPhotos = 20; // Ограничение до 20 фото
                 this.isCapturing = false;
-                this.zoomLevel = 1;
-                this.maxZoom = 8;
-                this.supportsZoom = false;
                 this.serverUrl = 'https://fg-tlaz.onrender.com'; 
 
                 this.initElements();
                 this.bindEvents();
-                this.loadInitialState();
+                this.loadInitialState(); // Загружаем состояние при запуске
             }
 
             initElements() {
+                // Welcome screen elements
                 this.welcomeScreen = document.getElementById('welcome-screen');
                 this.guestNameInput = document.getElementById('guest-name');
                 this.startSessionBtn = document.getElementById('start-session');
                 this.startBtnText = document.getElementById('start-btn-text');
 
+                // Camera screen elements
                 this.cameraScreen = document.getElementById('camera-screen');
                 this.videoStream = document.getElementById('video-stream');
                 this.captureBtn = document.getElementById('capture-photo');
@@ -609,16 +539,14 @@
                 this.galleryToggle = document.getElementById('gallery-toggle');
                 this.galleryWrapper = document.getElementById('gallery-wrapper');
 
-                this.zoomControls = document.getElementById('zoom-controls');
-                this.zoomSlider = document.getElementById('zoom-slider');
-                this.zoomValue = document.getElementById('zoom-value');
-
+                // UI elements
                 this.cameraIcon = document.getElementById('camera-icon');
                 this.captureLoading = document.getElementById('capture-loading');
                 this.successNotification = document.getElementById('success-notification');
                 this.errorNotification = document.getElementById('error-notification');
                 this.errorMessage = document.getElementById('error-message');
 
+                // Canvas
                 this.canvas = document.getElementById('capture-canvas');
                 this.ctx = this.canvas.getContext('2d');
             }
@@ -641,50 +569,11 @@
                 this.closeCameraBtn.addEventListener('click', () => this.closeCamera());
                 this.galleryToggle.addEventListener('click', () => this.toggleGallery());
 
-                this.zoomSlider.addEventListener('input', (e) => this.handleZoom(parseFloat(e.target.value)));
-
+                // Enter key support
                 this.guestNameInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !this.startSessionBtn.disabled) {
                         this.startSession();
                     }
-                });
-
-                // Touch zoom for mobile
-                let initialDistance = null;
-                this.videoStream.addEventListener('touchstart', (e) => {
-                    if (e.touches.length === 2) {
-                        e.preventDefault();
-                        const touch1 = e.touches[0];
-                        const touch2 = e.touches[1];
-                        initialDistance = Math.hypot(
-                            touch1.clientX - touch2.clientX,
-                            touch1.clientY - touch2.clientY
-                        );
-                    }
-                });
-
-                this.videoStream.addEventListener('touchmove', (e) => {
-                    if (e.touches.length === 2 && initialDistance && this.supportsZoom) {
-                        e.preventDefault();
-                        const touch1 = e.touches[0];
-                        const touch2 = e.touches[1];
-                        const currentDistance = Math.hypot(
-                            touch1.clientX - touch2.clientX,
-                            touch1.clientY - touch2.clientY
-                        );
-                        
-                        const zoomFactor = currentDistance / initialDistance;
-                        let newZoom = this.zoomLevel * zoomFactor;
-                        newZoom = Math.max(this.zoomSlider.min, Math.min(this.maxZoom, newZoom));
-                        
-                        this.handleZoom(newZoom);
-                        this.zoomSlider.value = newZoom;
-                        initialDistance = currentDistance;
-                    }
-                });
-
-                this.videoStream.addEventListener('touchend', () => {
-                    initialDistance = null;
                 });
             }
 
@@ -701,6 +590,7 @@
                 if (!this.userName) return;
 
                 try {
+                    // Сброс состояния для новой сессии, если имя пользователя изменилось
                     const lastUser = localStorage.getItem('lastWeddingUser');
                     if (lastUser !== this.userName) {
                         localStorage.setItem(`weddingPhotos_${lastUser}`, '[]');
@@ -713,7 +603,7 @@
                     await this.startCamera();
                     this.welcomeScreen.classList.add('hidden');
                     this.cameraScreen.classList.remove('hidden');
-                    this.loadUserPhotos();
+                    this.loadUserPhotos(); // Загрузка фото для текущего пользователя
                 } catch (error) {
                     console.error('Failed to start camera:', error);
                     this.showError('Не удалось запустить камеру');
@@ -764,10 +654,6 @@
                     } else {
                         console.log('ImageCapture API is not available.');
                     }
-                    await this.checkZoomSupport(track);
-                    this.zoomLevel = 1;
-                    this.zoomSlider.value = 1;
-                    this.handleZoom(1);
                     this.updatePhotosRemaining();
                     
                 } catch (error) {
@@ -783,70 +669,11 @@
                             this.videoStream.onloadedmetadata = resolve;
                         });
                         
-                        await this.checkZoomSupport(this.stream.getVideoTracks()[0]);
-                        this.zoomLevel = 1;
-                        this.zoomSlider.value = 1;
-                        this.handleZoom(1);
                         this.updatePhotosRemaining();
                     } catch (fallbackError) {
                         console.error('Fallback camera error:', fallbackError);
                         throw new Error('Не удалось получить доступ к камере');
                     }
-                }
-            }
-
-            async checkZoomSupport(track) {
-                if (!track) {
-                    this.supportsZoom = false;
-                    return;
-                }
-                try {
-                    const capabilities = track.getCapabilities();
-                    
-                    if (capabilities.zoom) {
-                        this.supportsZoom = true;
-                        this.maxZoom = Math.min(capabilities.zoom.max || 8, 8);
-                        this.zoomSlider.min = capabilities.zoom.min || 1;
-                        this.zoomSlider.max = this.maxZoom;
-                        this.zoomSlider.step = capabilities.zoom.step || 0.1;
-                        console.log(`Zoom supported: [${this.zoomSlider.min}-${this.zoomSlider.max}]`);
-                    } else {
-                        this.supportsZoom = false;
-                        console.log('Native zoom not supported.');
-                    }
-                } catch (error) {
-                    console.log('Zoom capabilities check failed:', error);
-                    this.supportsZoom = false;
-                }
-                 if (!this.supportsZoom) {
-                    this.zoomValue.textContent = 'Приближение недоступно';
-                }
-            }
-
-            handleZoom(value) {
-                if (!this.supportsZoom) {
-                    this.zoomValue.textContent = 'Приближение недоступно';
-                    return;
-                }
-                this.zoomLevel = parseFloat(value);
-                this.applyZoom();
-                this.zoomValue.textContent = `Приближение: ${this.zoomLevel.toFixed(1)}×`;
-            }
-
-            applyZoom() {
-                if (!this.stream || !this.supportsZoom) return;
-                const track = this.stream.getVideoTracks()[0];
-                const mirrorTransform = this.facingMode === 'user' ? 'scaleX(-1)' : '';
-
-                try {
-                    track.applyConstraints({
-                        advanced: [{ zoom: this.zoomLevel }]
-                    });
-                    // Only apply mirror transform, no scaling.
-                    this.videoStream.style.transform = mirrorTransform;
-                } catch (error) {
-                    console.error('Native zoom failed:', error);
-                    // Do not fall back to CSS scaling to prevent freezing.
                 }
             }
 
@@ -867,7 +694,6 @@
                 }
                 this.cameraScreen.classList.add('hidden');
                 this.welcomeScreen.classList.remove('hidden');
-                this.zoomLevel = 1;
             }
 
             updatePhotosRemaining() {
