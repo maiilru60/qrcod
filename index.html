@@ -219,7 +219,6 @@
             box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3);
         }
 
-        /* Улучшенная камера - без обрезки */
         .camera-frame-luxury {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(15px);
@@ -230,7 +229,6 @@
             position: relative;
         }
 
-        /* Полноэкранная камера для лучшего качества */
         #video-stream {
             width: 100%;
             height: 100%;
@@ -239,7 +237,6 @@
             transition: transform 0.3s ease;
         }
 
-        /* Новый стиль для зеркального отображения селфи-камеры */
         #video-stream.selfie-mirror {
             transform: scaleX(-1);
         }
@@ -303,12 +300,10 @@
             backdrop-filter: blur(20px);
         }
         
-        /* Плавное появление/исчезновение галереи */
         #gallery-wrapper {
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
 
-        /* Адаптивность для всех устройств */
         @media (max-width: 640px) {
             .camera-frame-luxury {
                 border-radius: 20px;
@@ -324,17 +319,15 @@
 
         @media (max-width: 480px) {
             .elegant-glass {
-                padding: 1.5rem; /* Уменьшаем отступы на маленьких экранах */
+                padding: 1.5rem;
             }
             
-            /* Ширина теперь управляется родительским контейнером */
-            
             .welcome-entrance h1 {
-                font-size: 3.5rem; /* Уменьшаем заголовок */
+                font-size: 3.5rem;
             }
 
             .welcome-entrance .mb-10 {
-                margin-bottom: 2rem; /* Уменьшаем отступы */
+                margin-bottom: 2rem;
             }
 
             .camera-controls-elegant > div {
@@ -342,7 +335,6 @@
             }
         }
 
-        /* Индикатор качества записи */
         .quality-indicator {
             background: linear-gradient(135deg, #22c55e, #16a34a);
             color: white;
@@ -513,13 +505,13 @@
                 this.facingMode = 'environment';
                 this.userName = '';
                 this.photoCount = 0;
-                this.maxPhotos = 20; // Ограничение до 20 фото
+                this.maxPhotos = 20;
                 this.isCapturing = false;
                 this.serverUrl = 'https://fg-tlaz.onrender.com'; 
 
                 this.initElements();
                 this.bindEvents();
-                this.loadInitialState(); // Загружаем состояние при запуске
+                this.loadInitialState();
             }
 
             initElements() {
@@ -571,9 +563,6 @@
                 this.closeCameraBtn.addEventListener('click', () => this.closeCamera());
                 this.galleryToggle.addEventListener('click', () => this.toggleGallery());
 
-                // Zoom controls
-                this.zoomSlider.addEventListener('input', (e) => this.handleZoom(parseFloat(e.target.value)));
-
                 // Enter key support
                 this.guestNameInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !this.startSessionBtn.disabled) {
@@ -581,43 +570,8 @@
                     }
                 });
 
-                // Touch zoom for mobile
-                let initialDistance = null;
-                this.videoStream.addEventListener('touchstart', (e) => {
-                    if (e.touches.length === 2) {
-                        e.preventDefault();
-                        const touch1 = e.touches[0];
-                        const touch2 = e.touches[1];
-                        initialDistance = Math.hypot(
-                            touch1.clientX - touch2.clientX,
-                            touch1.clientY - touch2.clientY
-                        );
-                    }
-                });
-
-                this.videoStream.addEventListener('touchmove', (e) => {
-                    if (e.touches.length === 2 && initialDistance) {
-                        e.preventDefault();
-                        const touch1 = e.touches[0];
-                        const touch2 = e.touches[1];
-                        const currentDistance = Math.hypot(
-                            touch1.clientX - touch2.clientX,
-                            touch1.clientY - touch2.clientY
-                        );
-                        
-                        const zoomFactor = currentDistance / initialDistance;
-                        let newZoom = this.zoomLevel * zoomFactor;
-                        newZoom = Math.max(1, Math.min(this.maxZoom, newZoom));
-                        
-                        this.handleZoom(newZoom);
-                        this.zoomSlider.value = newZoom;
-                        initialDistance = currentDistance;
-                    }
-                });
-
-                this.videoStream.addEventListener('touchend', () => {
-                    initialDistance = null;
-                });
+                // NOTE: The touch zoom functionality was removed because it was incomplete and causing errors.
+                // The original code was trying to use elements and variables that did not exist.
             }
 
             loadInitialState() {
@@ -633,7 +587,6 @@
                 if (!this.userName) return;
 
                 try {
-                    // Сброс состояния для новой сессии, если имя пользователя изменилось
                     const lastUser = localStorage.getItem('lastWeddingUser');
                     if (lastUser !== this.userName) {
                         localStorage.setItem(`weddingPhotos_${lastUser}`, '[]');
@@ -646,7 +599,7 @@
                     await this.startCamera();
                     this.welcomeScreen.classList.add('hidden');
                     this.cameraScreen.classList.remove('hidden');
-                    this.loadUserPhotos(); // Загрузка фото для текущего пользователя
+                    this.loadUserPhotos();
                 } catch (error) {
                     console.error('Failed to start camera:', error);
                     this.showError('Не удалось запустить камеру');
