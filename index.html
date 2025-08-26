@@ -235,6 +235,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transform-origin: center;
+            transition: transform 0.3s ease;
         }
 
         /* Новый стиль для зеркального отображения селфи-камеры */
@@ -569,11 +571,52 @@
                 this.closeCameraBtn.addEventListener('click', () => this.closeCamera());
                 this.galleryToggle.addEventListener('click', () => this.toggleGallery());
 
+                // Zoom controls
+                this.zoomSlider.addEventListener('input', (e) => this.handleZoom(parseFloat(e.target.value)));
+
                 // Enter key support
                 this.guestNameInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !this.startSessionBtn.disabled) {
                         this.startSession();
                     }
+                });
+
+                // Touch zoom for mobile
+                let initialDistance = null;
+                this.videoStream.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const touch1 = e.touches[0];
+                        const touch2 = e.touches[1];
+                        initialDistance = Math.hypot(
+                            touch1.clientX - touch2.clientX,
+                            touch1.clientY - touch2.clientY
+                        );
+                    }
+                });
+
+                this.videoStream.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 2 && initialDistance) {
+                        e.preventDefault();
+                        const touch1 = e.touches[0];
+                        const touch2 = e.touches[1];
+                        const currentDistance = Math.hypot(
+                            touch1.clientX - touch2.clientX,
+                            touch1.clientY - touch2.clientY
+                        );
+                        
+                        const zoomFactor = currentDistance / initialDistance;
+                        let newZoom = this.zoomLevel * zoomFactor;
+                        newZoom = Math.max(1, Math.min(this.maxZoom, newZoom));
+                        
+                        this.handleZoom(newZoom);
+                        this.zoomSlider.value = newZoom;
+                        initialDistance = currentDistance;
+                    }
+                });
+
+                this.videoStream.addEventListener('touchend', () => {
+                    initialDistance = null;
                 });
             }
 
@@ -732,7 +775,6 @@
                         const videoHeight = this.videoStream.videoHeight;
                         this.canvas.width = videoWidth;
                         this.canvas.height = videoHeight;
-                        
                         this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
                     }
 
