@@ -727,14 +727,11 @@
                         audio: false
                     };
 
-                    this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    this.stream = await navig.mediaDevices.getUserMedia(constraints);
                     this.videoStream.srcObject = this.stream;
                     
-                    if (this.facingMode === 'user') {
-                        this.videoStream.classList.add('selfie-mirror');
-                    } else {
-                        this.videoStream.classList.remove('selfie-mirror');
-                    }
+                    // Убираем зеркальное отображение для предпросмотра
+                    this.videoStream.classList.remove('selfie-mirror');
                     
                     await new Promise((resolve) => {
                         this.videoStream.onloadedmetadata = resolve;
@@ -875,23 +872,12 @@
                 this.showInstantCapture();
 
                 try {
+                    let imageBitmap;
+                    
                     if (this.imageCapture) {
                         console.log('Capturing with ImageCapture API');
                         const photoBlob = await this.imageCapture.takePhoto();
-                        const imageBitmap = await createImageBitmap(photoBlob);
-
-                        this.canvas.width = imageBitmap.width;
-                        this.canvas.height = imageBitmap.height;
-                        
-                        // Отзеркаливаем если это передняя камера
-                        if (this.facingMode === 'user') {
-                            this.ctx.translate(this.canvas.width, 0);
-                            this.ctx.scale(-1, 1);
-                            this.ctx.drawImage(imageBitmap, 0, 0);
-                            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-                        } else {
-                            this.ctx.drawImage(imageBitmap, 0, 0);
-                        }
+                        imageBitmap = await createImageBitmap(photoBlob);
                     } else {
                         console.log('Capturing with canvas fallback');
                         const videoWidth = this.videoStream.videoWidth;
@@ -899,15 +885,22 @@
                         this.canvas.width = videoWidth;
                         this.canvas.height = videoHeight;
                         
-                        // Отзеркаливаем если это передняя камера
-                        if (this.facingMode === 'user') {
-                            this.ctx.translate(this.canvas.width, 0);
-                            this.ctx.scale(-1, 1);
-                            this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
-                            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-                        } else {
-                            this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
-                        }
+                        this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
+                        imageBitmap = await createImageBitmap(this.canvas);
+                    }
+
+                    // Устанавливаем размер canvas для обработки
+                    this.canvas.width = imageBitmap.width;
+                    this.canvas.height = imageBitmap.height;
+                    
+                    // Отзеркаливаем изображение только для фронтальной камеры
+                    if (this.facingMode === 'user') {
+                        this.ctx.translate(this.canvas.width, 0);
+                        this.ctx.scale(-1, 1);
+                        this.ctx.drawImage(imageBitmap, 0, 0);
+                        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+                    } else {
+                        this.ctx.drawImage(imageBitmap, 0, 0);
                     }
 
                     const thumbnailUrl = this.canvas.toDataURL('image/jpeg', 0.7);
@@ -946,7 +939,8 @@
             async processAndUploadPhoto() {
                 try {
                     this.addElegantWatermark();
-                    const blob = await this.canvasToBlob(0.95);
+                    // Увеличиваем качество до 1.0 для более крупных фотографий
+                    const blob = await this.canvasToBlob(1.0);
                     const uploadResult = await this.uploadPhoto(blob);
                     
                     if (uploadResult) {
@@ -985,7 +979,7 @@
                 this.ctx.shadowOffsetY = 0;
             }
 
-            canvasToBlob(quality = 0.95) {
+            canvasToBlob(quality = 1.0) {
                 return new Promise(resolve => {
                     this.canvas.toBlob(resolve, 'image/jpeg', quality);
                 });
