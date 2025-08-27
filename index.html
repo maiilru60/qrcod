@@ -439,7 +439,7 @@
                 <p class="text-gray-800 text-xl font-semibold">Свадебная Фотобудка</p>
                 <p class="text-gray-600 text-lg">Запечатлите волшебные моменты нашего торжества</p>
                 <div class="quality-indicator inline-block">
-                    📸 4K Качество • 20 Фотографий
+                    📸 Full HD Качество • 20 Фотографий
                 </div>
             </div>
 
@@ -472,7 +472,7 @@
             <div class="flex items-center justify-between">
                 <div class="elegant-glass rounded-2xl px-4 py-2 flex items-center space-x-2">
                     <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span class="text-white text-sm font-semibold">4K Live</span>
+                    <span class="text-white text-sm font-semibold">Full HD Live</span>
                 </div>
                 
                 <div class="elegant-glass rounded-2xl px-4 py-2">
@@ -516,7 +516,7 @@
                 <!-- Capture Button -->
                 <button id="capture-photo" class="capture-pulse w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-xl disabled:opacity-50">
                     <svg id="camera-icon" class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.65-.07.97c0 .33.03.65.07.97L2.46 14.4c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59-1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/>
+                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.64-.07.97c0 .33.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59 1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63M12 13c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z"/>
                     </svg>
                     <div id="capture-loading" class="elegant-spinner hidden"></div>
                 </button>
@@ -598,7 +598,7 @@
                 this.maxPhotos = 20;
                 this.isCapturing = false;
                 this.serverUrl = 'https://fg-tlaz.onrender.com'; 
-                this.highQuality = true;
+                this.highQuality = false; // Изменено на false для ускорения
 
                 this.initElements();
                 this.bindEvents();
@@ -720,37 +720,28 @@
                     const constraints = {
                         video: { 
                             facingMode: this.facingMode,
-                            width: { ideal: 4096, min: 1920 },
-                            height: { ideal: 2160, min: 1080 },
+                            width: { ideal: 1920, max: 1920 },
+                            height: { ideal: 1080, max: 1080 },
                             frameRate: { ideal: 30, min: 24 }
                         },
                         audio: false
                     };
 
-                    this.stream = await navig.mediaDevices.getUserMedia(constraints);
+                    this.stream = await navigator.mediaDevices.getUserMedia(constraints);
                     this.videoStream.srcObject = this.stream;
                     
-                    // Убираем зеркальное отображение для предпросмотра
-                    this.videoStream.classList.remove('selfie-mirror');
+                    // Зеркалим видео для фронтальной камеры
+                    if (this.facingMode === 'user') {
+                        this.videoStream.classList.add('selfie-mirror');
+                    } else {
+                        this.videoStream.classList.remove('selfie-mirror');
+                    }
                     
                     await new Promise((resolve) => {
                         this.videoStream.onloadedmetadata = resolve;
                     });
                     
                     console.log(`Камера запущена: ${this.videoStream.videoWidth}x${this.videoStream.videoHeight}`);
-                    
-                    const track = this.stream.getVideoTracks()[0];
-                    if (window.ImageCapture) {
-                        try {
-                            this.imageCapture = new ImageCapture(track);
-                            console.log('ImageCapture API is available.');
-                        } catch (e) {
-                            console.error('Failed to create ImageCapture:', e);
-                            this.imageCapture = null;
-                        }
-                    } else {
-                        console.log('ImageCapture API is not available.');
-                    }
                     
                     this.updatePhotosRemaining();
                     
@@ -872,45 +863,79 @@
                 this.showInstantCapture();
 
                 try {
-                    let imageBitmap;
+                    console.log('Capturing with canvas');
+                    const videoWidth = this.videoStream.videoWidth;
+                    const videoHeight = this.videoStream.videoHeight;
+                    this.canvas.width = videoWidth;
+                    this.canvas.height = videoHeight;
                     
-                    if (this.imageCapture) {
-                        console.log('Capturing with ImageCapture API');
-                        const photoBlob = await this.imageCapture.takePhoto();
-                        imageBitmap = await createImageBitmap(photoBlob);
+                    this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
+                    const imageBitmap = await createImageBitmap(this.canvas);
+
+                    // Создаем целевой canvas с размером 1080x1920
+                    const targetCanvas = document.createElement('canvas');
+                    targetCanvas.width = 1080;
+                    targetCanvas.height = 1920;
+                    const targetCtx = targetCanvas.getContext('2d');
+
+                    // Определяем, нужно ли отражать изображение (для фронтальной камеры)
+                    const flipHorizontal = this.facingMode === 'user';
+
+                    // Вычисляем параметры отрисовки для сохранения пропорций
+                    const sourceAspect = imageBitmap.width / imageBitmap.height;
+                    const targetAspect = targetCanvas.width / targetCanvas.height;
+
+                    let drawWidth, drawHeight, offsetX, offsetY;
+
+                    if (sourceAspect > targetAspect) {
+                        // Источник шире цели -> обрезаем по бокам
+                        drawHeight = targetCanvas.height;
+                        drawWidth = imageBitmap.width * (drawHeight / imageBitmap.height);
+                        offsetX = (targetCanvas.width - drawWidth) / 2;
+                        offsetY = 0;
                     } else {
-                        console.log('Capturing with canvas fallback');
-                        const videoWidth = this.videoStream.videoWidth;
-                        const videoHeight = this.videoStream.videoHeight;
-                        this.canvas.width = videoWidth;
-                        this.canvas.height = videoHeight;
-                        
-                        this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
-                        imageBitmap = await createImageBitmap(this.canvas);
+                        // Источник уже цели -> обрезаем сверху и снизу
+                        drawWidth = targetCanvas.width;
+                        drawHeight = imageBitmap.height * (drawWidth / imageBitmap.width);
+                        offsetX = 0;
+                        offsetY = (targetCanvas.height - drawHeight) / 2;
                     }
 
-                    // Устанавливаем размер canvas для обработки
-                    this.canvas.width = imageBitmap.width;
-                    this.canvas.height = imageBitmap.height;
-                    
-                    // Отзеркаливаем изображение только для фронтальной камеры
-                    if (this.facingMode === 'user') {
-                        this.ctx.translate(this.canvas.width, 0);
-                        this.ctx.scale(-1, 1);
-                        this.ctx.drawImage(imageBitmap, 0, 0);
-                        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-                    } else {
-                        this.ctx.drawImage(imageBitmap, 0, 0);
+                    // Если нужно отразить по горизонтали (для фронтальной камеры)
+                    if (flipHorizontal) {
+                        targetCtx.translate(targetCanvas.width, 0);
+                        targetCtx.scale(-1, 1);
+                        offsetX = targetCanvas.width - offsetX - drawWidth;
                     }
 
-                    const thumbnailUrl = this.canvas.toDataURL('image/jpeg', 0.7);
+                    // Рисуем изображение на целевом canvas
+                    targetCtx.drawImage(imageBitmap, 0, 0, imageBitmap.width, imageBitmap.height, offsetX, offsetY, drawWidth, drawHeight);
+
+                    // Сбрасываем трансформацию
+                    targetCtx.setTransform(1, 0, 0, 1, 0, 0);
+
+                    // Добавляем водяной знак
+                    this.addElegantWatermark(targetCtx, targetCanvas.width, targetCanvas.height, this.userName);
+
+                    // Получаем blob из targetCanvas
+                    const blob = await new Promise(resolve => targetCanvas.toBlob(resolve, 'image/jpeg', 0.8));
+
+                    // Создаем dataURL для миниатюры
+                    const thumbnailUrl = targetCanvas.toDataURL('image/jpeg', 0.6);
                     this.addPhotoThumbnail(thumbnailUrl);
                     
                     this.photoCount++;
                     this.updatePhotoCounter();
                     this.updatePhotosRemaining();
 
-                    this.processAndUploadPhoto();
+                    // Отправляем blob на сервер
+                    this.uploadPhoto(blob).catch(error => {
+                        console.error('Upload error:', error);
+                        this.showError('Ошибка отправки фото');
+                    });
+
+                    // Освобождаем ресурсы
+                    imageBitmap.close();
 
                 } catch (error) {
                     console.error('Capture failed:', error);
@@ -936,53 +961,31 @@
                 }, 100);
             }
 
-            async processAndUploadPhoto() {
-                try {
-                    this.addElegantWatermark();
-                    // Увеличиваем качество до 1.0 для более крупных фотографий
-                    const blob = await this.canvasToBlob(1.0);
-                    const uploadResult = await this.uploadPhoto(blob);
-                    
-                    if (uploadResult) {
-                        this.showSuccess();
-                    }
-                } catch (error) {
-                    console.error('Processing/Upload failed:', error);
-                    this.showError(`Ошибка отправки: ${error.message}. Попробуйте еще раз.`);
-                }
-            }
-
-            addElegantWatermark() {
-                const text = `${this.userName} • Илья & Алина • 28.08.2025`;
-                const fontSize = Math.max(24, this.canvas.width / 60);
+            addElegantWatermark(ctx, width, height, userName) {
+                const text = `${userName} • Илья & Алина • 28.08.2025`;
+                const fontSize = Math.max(24, width / 60);
                 
-                this.ctx.font = `bold ${fontSize}px Inter, sans-serif`;
-                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                this.ctx.strokeStyle = 'rgba(244, 63, 94, 0.8)';
-                this.ctx.lineWidth = Math.max(2, fontSize / 12);
-                this.ctx.textAlign = 'center';
-                this.ctx.textBaseline = 'bottom';
-                this.ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-                this.ctx.shadowBlur = fontSize / 2;
-                this.ctx.shadowOffsetX = 2;
-                this.ctx.shadowOffsetY = 2;
+                ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                ctx.strokeStyle = 'rgba(244, 63, 94, 0.8)';
+                ctx.lineWidth = Math.max(2, fontSize / 12);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+                ctx.shadowBlur = fontSize / 2;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
                 
-                const x = this.canvas.width / 2;
-                const y = this.canvas.height - (fontSize / 2);
+                const x = width / 2;
+                const y = height - (fontSize / 2);
                 
-                this.ctx.strokeText(text, x, y);
-                this.ctx.fillText(text, x, y);
+                ctx.strokeText(text, x, y);
+                ctx.fillText(text, x, y);
                 
-                this.ctx.shadowColor = 'transparent';
-                this.ctx.shadowBlur = 0;
-                this.ctx.shadowOffsetX = 0;
-                this.ctx.shadowOffsetY = 0;
-            }
-
-            canvasToBlob(quality = 1.0) {
-                return new Promise(resolve => {
-                    this.canvas.toBlob(resolve, 'image/jpeg', quality);
-                });
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
             }
 
             async uploadPhoto(blob) {
@@ -1015,6 +1018,7 @@
                             if (xhr.status >= 200 && xhr.status < 300) {
                                 const result = JSON.parse(xhr.responseText);
                                 console.log('Фото успешно отправлено:', result);
+                                this.showSuccess();
                                 resolve(result);
                             } else {
                                 const error = new Error(`HTTP ${xhr.status}: ${xhr.responseText.substring(0, 100)}`);
