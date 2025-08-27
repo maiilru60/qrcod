@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -304,6 +306,70 @@
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
 
+        .gallery-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .gallery-content {
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            background: #1a1a2e;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gallery-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gallery-grid {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 3/4;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         @media (max-width: 640px) {
             .camera-frame-luxury {
                 border-radius: 20px;
@@ -314,6 +380,10 @@
                 width: 40px;
                 height: 40px;
                 min-width: 40px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
 
@@ -495,6 +565,26 @@
         </div>
     </div>
 
+    <!-- Gallery Modal -->
+    <div id="gallery-modal" class="gallery-modal">
+        <div class="gallery-content">
+            <div class="gallery-header">
+                <h2 class="text-white text-xl font-bold">Ваши фотографии</h2>
+                <div class="flex space-x-2">
+                    <button id="download-all-btn" class="luxury-button text-white font-bold py-2 px-4 rounded-xl">
+                        Скачать все
+                    </button>
+                    <button id="close-gallery" class="elegant-glass rounded-xl p-2 text-white hover:bg-white/20 transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="gallery-grid" class="gallery-grid"></div>
+        </div>
+    </div>
+
     <canvas id="capture-canvas" class="hidden"></canvas>
 
     <script>
@@ -508,6 +598,7 @@
                 this.maxPhotos = 20;
                 this.isCapturing = false;
                 this.serverUrl = 'https://fg-tlaz.onrender.com'; 
+                this.highQuality = true;
 
                 this.initElements();
                 this.bindEvents();
@@ -540,6 +631,12 @@
                 this.errorNotification = document.getElementById('error-notification');
                 this.errorMessage = document.getElementById('error-message');
 
+                // Gallery elements
+                this.galleryModal = document.getElementById('gallery-modal');
+                this.galleryGrid = document.getElementById('gallery-grid');
+                this.downloadAllBtn = document.getElementById('download-all-btn');
+                this.closeGalleryBtn = document.getElementById('close-gallery');
+
                 // Canvas
                 this.canvas = document.getElementById('capture-canvas');
                 this.ctx = this.canvas.getContext('2d');
@@ -561,12 +658,21 @@
                 this.captureBtn.addEventListener('click', () => this.capturePhoto());
                 this.switchCameraBtn.addEventListener('click', () => this.switchCamera());
                 this.closeCameraBtn.addEventListener('click', () => this.closeCamera());
-                this.galleryToggle.addEventListener('click', () => this.toggleGallery());
+                this.galleryToggle.addEventListener('click', () => this.openGallery());
+                this.downloadAllBtn.addEventListener('click', () => this.downloadAllPhotos());
+                this.closeGalleryBtn.addEventListener('click', () => this.closeGallery());
 
                 // Enter key support
                 this.guestNameInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !this.startSessionBtn.disabled) {
                         this.startSession();
+                    }
+                });
+
+                // Close gallery on outside click
+                this.galleryModal.addEventListener('click', (e) => {
+                    if (e.target === this.galleryModal) {
+                        this.closeGallery();
                     }
                 });
             }
@@ -614,14 +720,14 @@
                     const constraints = {
                         video: { 
                             facingMode: this.facingMode,
-                            width: { ideal: 1920, min: 1280 },
-                            height: { ideal: 1080, min: 720 },
-                            frameRate: { ideal: 30, min: 15 }
+                            width: { ideal: 4096, min: 1920 },
+                            height: { ideal: 2160, min: 1080 },
+                            frameRate: { ideal: 30, min: 24 }
                         },
                         audio: false
                     };
 
-                    this.stream = await navig.mediaDevices.getUserMedia(constraints);
+                    this.stream = await navigator.mediaDevices.getUserMedia(constraints);
                     this.videoStream.srcObject = this.stream;
                     
                     if (this.facingMode === 'user') {
@@ -672,10 +778,66 @@
                 }
             }
 
-            toggleGallery() {
-                this.galleryWrapper.classList.toggle('opacity-0');
-                this.galleryWrapper.classList.toggle('pointer-events-none');
-                this.galleryWrapper.classList.toggle('transform');
+            openGallery() {
+                this.renderGallery();
+                this.galleryModal.classList.add('active');
+            }
+
+            closeGallery() {
+                this.galleryModal.classList.remove('active');
+            }
+
+            renderGallery() {
+                if (!this.userName) return;
+                const photos = JSON.parse(localStorage.getItem(`weddingPhotos_${this.userName}`) || '[]');
+                this.galleryGrid.innerHTML = '';
+                
+                photos.forEach((dataUrl, index) => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+                    galleryItem.innerHTML = `<img src="${dataUrl}" alt="Photo ${index + 1}">`;
+                    this.galleryGrid.appendChild(galleryItem);
+                });
+            }
+
+            async downloadAllPhotos() {
+                if (!this.userName) return;
+                const photos = JSON.parse(localStorage.getItem(`weddingPhotos_${this.userName}`) || '[]');
+                
+                if (photos.length === 0) {
+                    this.showError('Нет фотографий для скачивания');
+                    return;
+                }
+
+                try {
+                    const zip = new JSZip();
+                    const folder = zip.folder(`Фотографии_${this.userName}`);
+
+                    for (let i = 0; i < photos.length; i++) {
+                        const dataUrl = photos[i];
+                        const blob = this.dataURLToBlob(dataUrl);
+                        folder.file(`Фото_${i + 1}.jpg`, blob);
+                    }
+
+                    const content = await zip.generateAsync({type: "blob"});
+                    saveAs(content, `Фотографии_${this.userName}.zip`);
+                    this.showSuccess('Все фотографии скачаны');
+                } catch (error) {
+                    console.error('Download error:', error);
+                    this.showError('Ошибка при скачивании');
+                }
+            }
+
+            dataURLToBlob(dataUrl) {
+                const arr = dataUrl.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new Blob([u8arr], {type: mime});
             }
 
             async switchCamera() {
@@ -720,7 +882,16 @@
 
                         this.canvas.width = imageBitmap.width;
                         this.canvas.height = imageBitmap.height;
-                        this.ctx.drawImage(imageBitmap, 0, 0);
+                        
+                        // Отзеркаливаем если это передняя камера
+                        if (this.facingMode === 'user') {
+                            this.ctx.translate(this.canvas.width, 0);
+                            this.ctx.scale(-1, 1);
+                            this.ctx.drawImage(imageBitmap, 0, 0);
+                            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+                        } else {
+                            this.ctx.drawImage(imageBitmap, 0, 0);
+                        }
                     } else {
                         console.log('Capturing with canvas fallback');
                         const videoWidth = this.videoStream.videoWidth;
@@ -728,10 +899,18 @@
                         this.canvas.width = videoWidth;
                         this.canvas.height = videoHeight;
                         
-                        this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
+                        // Отзеркаливаем если это передняя камера
+                        if (this.facingMode === 'user') {
+                            this.ctx.translate(this.canvas.width, 0);
+                            this.ctx.scale(-1, 1);
+                            this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
+                            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+                        } else {
+                            this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
+                        }
                     }
 
-                    const thumbnailUrl = this.canvas.toDataURL('image/jpeg', 0.6);
+                    const thumbnailUrl = this.canvas.toDataURL('image/jpeg', 0.7);
                     this.addPhotoThumbnail(thumbnailUrl);
                     
                     this.photoCount++;
@@ -767,8 +946,7 @@
             async processAndUploadPhoto() {
                 try {
                     this.addElegantWatermark();
-                    this.enhanceImage();
-                    const blob = await this.canvasToBlob(0.92);
+                    const blob = await this.canvasToBlob(0.95);
                     const uploadResult = await this.uploadPhoto(blob);
                     
                     if (uploadResult) {
@@ -778,22 +956,6 @@
                     console.error('Processing/Upload failed:', error);
                     this.showError(`Ошибка отправки: ${error.message}. Попробуйте еще раз.`);
                 }
-            }
-
-            enhanceImage() {
-                const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-                const data = imageData.data;
-                
-                const contrast = 1.1;
-                const brightness = 5;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    data[i] = Math.min(255, Math.max(0, (data[i] - 128) * contrast + 128 + brightness));
-                    data[i + 1] = Math.min(255, Math.max(0, (data[i + 1] - 128) * contrast + 128 + brightness));
-                    data[i + 2] = Math.min(255, Math.max(0, (data[i + 2] - 128) * contrast + 128 + brightness));
-                }
-                
-                this.ctx.putImageData(imageData, 0, 0);
             }
 
             addElegantWatermark() {
@@ -902,7 +1064,7 @@
                 thumbnail.appendChild(img);
                 
                 thumbnail.addEventListener('click', () => {
-                    this.showPhotoPreview(dataUrl);
+                    this.openGallery();
                 });
 
                 this.photoGallery.prepend(thumbnail);
@@ -916,25 +1078,6 @@
                 this.photoCount = photos.length;
                 this.updatePhotoCounter();
                 this.updatePhotosRemaining();
-            }
-
-            showPhotoPreview(dataUrl) {
-                const modal = document.createElement('div');
-                modal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4';
-                modal.innerHTML = `
-                    <div class="relative max-w-4xl max-h-full">
-                        <img src="${dataUrl}" class="max-w-full max-h-full object-contain rounded-2xl">
-                        <button class="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75 transition">×</button>
-                    </div>
-                `;
-                
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal || e.target.tagName === 'BUTTON') {
-                        document.body.removeChild(modal);
-                    }
-                });
-                
-                document.body.appendChild(modal);
             }
 
             updatePhotoCounter() {
