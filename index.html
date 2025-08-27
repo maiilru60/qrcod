@@ -219,7 +219,6 @@
             box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3);
         }
 
-        /* Улучшенная камера - без обрезки */
         .camera-frame-luxury {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(15px);
@@ -230,15 +229,14 @@
             position: relative;
         }
 
-        /* Полноэкранная камера для лучшего качества */
         #video-stream {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transform-origin: center;
+            transition: transform 0.3s ease;
         }
 
-        /* Новый стиль для зеркального отображения селфи-камеры */
         #video-stream.selfie-mirror {
             transform: scaleX(-1);
         }
@@ -302,12 +300,10 @@
             backdrop-filter: blur(20px);
         }
         
-        /* Плавное появление/исчезновение галереи */
         #gallery-wrapper {
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
 
-        /* Адаптивность для всех устройств */
         @media (max-width: 640px) {
             .camera-frame-luxury {
                 border-radius: 20px;
@@ -323,17 +319,15 @@
 
         @media (max-width: 480px) {
             .elegant-glass {
-                padding: 1.5rem; /* Уменьшаем отступы на маленьких экранах */
+                padding: 1.5rem;
             }
             
-            /* Ширина теперь управляется родительским контейнером */
-            
             .welcome-entrance h1 {
-                font-size: 3.5rem; /* Уменьшаем заголовок */
+                font-size: 3.5rem;
             }
 
             .welcome-entrance .mb-10 {
-                margin-bottom: 2rem; /* Уменьшаем отступы */
+                margin-bottom: 2rem;
             }
 
             .camera-controls-elegant > div {
@@ -341,7 +335,6 @@
             }
         }
 
-        /* Индикатор качества записи */
         .quality-indicator {
             background: linear-gradient(135deg, #22c55e, #16a34a);
             color: white;
@@ -449,241 +442,537 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
                 </button>
+
                 <!-- Capture Button -->
                 <button id="capture-photo" class="capture-pulse w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-xl disabled:opacity-50">
                     <svg id="camera-icon" class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.21l-2.06.79c-.59-.44-1.24-.81-1.92-1.11l-.32-2.16A.5.5 0 0 0 12.5 2h-1c-.28 0-.5.22-.5.5l-.32 2.16c-.68.3-1.33.67-1.92 1.11L5.94 4.16c-.22-.1-.49-.01-.61.21l-2 3.46c-.12.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97s.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.21l2.06-.79c.59.44 1.24.81 1.92 1.11l.32 2.16c.03.28.25.5.5.5h1c.28 0 .5-.22.5-.5l.32-2.16c.68-.3 1.33-.67 1.92-1.11l2.06.79c.22.1.49.01.61-.21l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63z"/>
+                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.65-.07.97c0 .33.03.65.07.97L2.46 14.4c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59-1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/>
                     </svg>
-                    <div id="camera-loading" class="elegant-spinner hidden"></div>
+                    <div id="capture-loading" class="elegant-spinner hidden"></div>
                 </button>
-                <!-- Switch Camera Button -->
+
+                <!-- Switch Camera -->
                 <button id="switch-camera" class="elegant-glass rounded-2xl p-4 text-white hover:bg-white/20 transition-all">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 5-5v3h4v4h-4v3zm8-5h-4v-4h4v4z"/>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                     </svg>
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- Success Notification -->
-        <div id="success-notification" class="hidden fixed bottom-24 right-6 bg-green-500 text-white px-4 py-2 rounded-2xl shadow-xl z-50 notification-luxury">
-            <div class="flex items-center space-x-2">
-                <svg class="w-6 h-6 success-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <span>Фотография готова!</span>
+    <!-- Success Notification -->
+    <div id="success-notification" class="fixed top-6 right-6 z-50 hidden notification-luxury">
+        <div class="elegant-glass rounded-2xl p-5 flex items-center space-x-4 min-w-80">
+            <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center success-bounce">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
             </div>
-        </div>
-
-        <!-- Error Notification -->
-        <div id="error-notification" class="hidden fixed bottom-24 right-6 bg-red-500 text-white px-4 py-2 rounded-2xl shadow-xl z-50 notification-luxury">
-            <div class="flex items-center space-x-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <span id="error-message"></span>
+            <div class="flex-1">
+                <p class="text-white font-bold text-sm">Фото отправлено!</p>
+                <p class="text-white/70 text-xs mt-1">Успешно загружено в Telegram канал</p>
             </div>
         </div>
     </div>
 
-    <!-- Full-size photo viewer -->
-    <div id="photo-viewer" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
-        <div class="relative max-w-2xl w-full h-full">
-            <button id="close-viewer" class="absolute top-4 right-4 text-white p-3 rounded-full bg-white/20 hover:bg-white/30 transition-all z-10">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
-            <img id="viewer-image" src="" alt="Full-size Photo" class="max-w-full max-h-full object-contain rounded-3xl slide-in-elegant">
+    <!-- Error Notification -->
+    <div id="error-notification" class="fixed top-6 right-6 z-50 hidden notification-luxury">
+        <div class="elegant-glass rounded-2xl p-5 flex items-center space-x-4 min-w-80 border border-red-400/30">
+            <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex-1">
+                <p class="text-white font-bold text-sm">Ошибка отправки</p>
+                <p id="error-message" class="text-white/70 text-xs mt-1">Попробуйте ещё раз</p>
+            </div>
         </div>
     </div>
+
+    <canvas id="capture-canvas" class="hidden"></canvas>
 
     <script>
         class LuxuryPhotoBooth {
             constructor() {
+                this.stream = null;
+                this.imageCapture = null;
+                this.facingMode = 'environment';
+                this.userName = '';
+                this.photoCount = 0;
+                this.maxPhotos = 20;
+                this.isCapturing = false;
+                this.serverUrl = 'https://fg-tlaz.onrender.com'; 
+
+                this.initElements();
+                this.bindEvents();
+                this.loadInitialState();
+            }
+
+            initElements() {
+                // Welcome screen elements
                 this.welcomeScreen = document.getElementById('welcome-screen');
+                this.guestNameInput = document.getElementById('guest-name');
+                this.startSessionBtn = document.getElementById('start-session');
+                this.startBtnText = document.getElementById('start-btn-text');
+
+                // Camera screen elements
                 this.cameraScreen = document.getElementById('camera-screen');
-                this.startBtn = document.getElementById('start-session');
-                this.closeCameraBtn = document.getElementById('close-camera');
+                this.videoStream = document.getElementById('video-stream');
                 this.captureBtn = document.getElementById('capture-photo');
                 this.switchCameraBtn = document.getElementById('switch-camera');
-                this.galleryToggleBtn = document.getElementById('gallery-toggle');
-                this.video = document.getElementById('video-stream');
+                this.closeCameraBtn = document.getElementById('close-camera');
                 this.photoGallery = document.getElementById('photo-gallery');
-                this.photosRemainingSpan = document.getElementById('photos-remaining');
-                this.photosTakenSpan = document.getElementById('photos-taken');
-                this.photoViewer = document.getElementById('photo-viewer');
-                this.viewerImage = document.getElementById('viewer-image');
-                this.closeViewerBtn = document.getElementById('close-viewer');
+                this.photosTakenEl = document.getElementById('photos-taken');
+                this.photosRemainingEl = document.getElementById('photos-remaining');
+                this.galleryToggle = document.getElementById('gallery-toggle');
                 this.galleryWrapper = document.getElementById('gallery-wrapper');
-                this.guestNameInput = document.getElementById('guest-name');
+
+                // UI elements
                 this.cameraIcon = document.getElementById('camera-icon');
-                this.cameraLoadingSpinner = document.getElementById('camera-loading');
+                this.captureLoading = document.getElementById('capture-loading');
                 this.successNotification = document.getElementById('success-notification');
                 this.errorNotification = document.getElementById('error-notification');
                 this.errorMessage = document.getElementById('error-message');
 
-                this.stream = null;
-                this.facingMode = 'environment';
-                this.photoCount = 0;
-                this.maxPhotos = 20;
-                this.isUploading = false;
-
-                this.bindEvents();
+                // Canvas
+                this.canvas = document.getElementById('capture-canvas');
+                this.ctx = this.canvas.getContext('2d');
             }
 
             bindEvents() {
-                this.startBtn.addEventListener('click', () => this.startSession());
-                this.closeCameraBtn.addEventListener('click', () => this.endSession());
+                this.guestNameInput.addEventListener('input', (e) => {
+                    const name = e.target.value.trim();
+                    localStorage.setItem('weddingGuestName', name);
+                    this.startSessionBtn.disabled = !name;
+                    if (name) {
+                        this.startBtnText.textContent = `Привет, ${name}! Начать съёмку`;
+                    } else {
+                        this.startBtnText.textContent = 'Начать съёмку';
+                    }
+                });
+
+                this.startSessionBtn.addEventListener('click', () => this.startSession());
                 this.captureBtn.addEventListener('click', () => this.capturePhoto());
                 this.switchCameraBtn.addEventListener('click', () => this.switchCamera());
-                this.galleryToggleBtn.addEventListener('click', () => this.toggleGallery());
-                this.closeViewerBtn.addEventListener('click', () => this.photoViewer.classList.add('hidden'));
-                this.guestNameInput.addEventListener('input', () => this.checkNameInput());
+                this.closeCameraBtn.addEventListener('click', () => this.closeCamera());
+                this.galleryToggle.addEventListener('click', () => this.toggleGallery());
+
+                // Enter key support
+                this.guestNameInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !this.startSessionBtn.disabled) {
+                        this.startSession();
+                    }
+                });
             }
 
-            checkNameInput() {
-                this.startBtn.disabled = this.guestNameInput.value.trim() === '';
+            loadInitialState() {
+                const savedName = localStorage.getItem('weddingGuestName');
+                if (savedName) {
+                    this.guestNameInput.value = savedName;
+                    this.guestNameInput.dispatchEvent(new Event('input'));
+                }
             }
 
             async startSession() {
-                this.welcomeScreen.classList.add('hidden');
-                this.cameraScreen.classList.remove('hidden');
-                this.photoCount = 0;
-                this.updatePhotoCount();
-                this.photoGallery.innerHTML = '';
-                this.startCamera();
+                this.userName = this.guestNameInput.value.trim();
+                if (!this.userName) return;
+
+                try {
+                    // Сброс состояния для новой сессии, если имя пользователя изменилось
+                    const lastUser = localStorage.getItem('lastWeddingUser');
+                    if (lastUser !== this.userName) {
+                        localStorage.setItem(`weddingPhotos_${lastUser}`, '[]');
+                    }
+                    localStorage.setItem('lastWeddingUser', this.userName);
+
+                    this.photoCount = 0; 
+                    this.photoGallery.innerHTML = '';
+
+                    await this.startCamera();
+                    this.welcomeScreen.classList.add('hidden');
+                    this.cameraScreen.classList.remove('hidden');
+                    this.loadUserPhotos();
+                } catch (error) {
+                    console.error('Failed to start camera:', error);
+                    this.showError('Не удалось запустить камеру');
+                }
             }
 
-            endSession() {
-                this.stopCamera();
+            async startCamera() {
+                if (this.stream) {
+                    this.stream.getTracks().forEach(track => track.stop());
+                }
+                this.imageCapture = null;
+
+                try {
+                    const constraints = {
+                        video: { 
+                            facingMode: this.facingMode,
+                            width: { ideal: 1920, min: 1280 },
+                            height: { ideal: 1080, min: 720 },
+                            frameRate: { ideal: 30, min: 15 }
+                        },
+                        audio: false
+                    };
+
+                    this.stream = await navig.mediaDevices.getUserMedia(constraints);
+                    this.videoStream.srcObject = this.stream;
+                    
+                    if (this.facingMode === 'user') {
+                        this.videoStream.classList.add('selfie-mirror');
+                    } else {
+                        this.videoStream.classList.remove('selfie-mirror');
+                    }
+                    
+                    await new Promise((resolve) => {
+                        this.videoStream.onloadedmetadata = resolve;
+                    });
+                    
+                    console.log(`Камера запущена: ${this.videoStream.videoWidth}x${this.videoStream.videoHeight}`);
+                    
+                    const track = this.stream.getVideoTracks()[0];
+                    if (window.ImageCapture) {
+                        try {
+                            this.imageCapture = new ImageCapture(track);
+                            console.log('ImageCapture API is available.');
+                        } catch (e) {
+                            console.error('Failed to create ImageCapture:', e);
+                            this.imageCapture = null;
+                        }
+                    } else {
+                        console.log('ImageCapture API is not available.');
+                    }
+                    
+                    this.updatePhotosRemaining();
+                    
+                } catch (error) {
+                    console.error('Camera error:', error);
+                    try {
+                        this.stream = await navigator.mediaDevices.getUserMedia({
+                            video: { facingMode: this.facingMode },
+                            audio: false
+                        });
+                        this.videoStream.srcObject = this.stream;
+                        
+                        await new Promise((resolve) => {
+                            this.videoStream.onloadedmetadata = resolve;
+                        });
+                        
+                        this.updatePhotosRemaining();
+                    } catch (fallbackError) {
+                        console.error('Fallback camera error:', fallbackError);
+                        throw new Error('Не удалось получить доступ к камере');
+                    }
+                }
+            }
+
+            toggleGallery() {
+                this.galleryWrapper.classList.toggle('opacity-0');
+                this.galleryWrapper.classList.toggle('pointer-events-none');
+                this.galleryWrapper.classList.toggle('transform');
+            }
+
+            async switchCamera() {
+                this.facingMode = this.facingMode === 'user' ? 'environment' : 'user';
+                await this.startCamera();
+            }
+
+            closeCamera() {
+                if (this.stream) {
+                    this.stream.getTracks().forEach(track => track.stop());
+                }
                 this.cameraScreen.classList.add('hidden');
                 this.welcomeScreen.classList.remove('hidden');
             }
 
-            async startCamera() {
-                this.stopCamera();
-                this.showLoader();
-                try {
-                    this.stream = await navigator.mediaDevices.getUserMedia({
-                        video: {
-                            facingMode: this.facingMode,
-                            width: { ideal: 4096 },
-                            height: { ideal: 2160 }
-                        },
-                        audio: false
-                    });
-                    this.video.srcObject = this.stream;
-                    this.video.play();
-                    this.video.classList.toggle('selfie-mirror', this.facingMode === 'user');
-                    this.hideLoader();
-                } catch (err) {
-                    console.error('Error accessing camera:', err);
-                    this.showError('Не удалось получить доступ к камере.');
-                    this.hideLoader();
+            updatePhotosRemaining() {
+                const remaining = this.maxPhotos - this.photoCount;
+                this.photosRemainingEl.textContent = `${remaining} осталось`;
+                
+                if (remaining <= 0) {
+                    this.captureBtn.disabled = true;
+                    this.photosRemainingEl.textContent = 'Лимит достигнут';
+                    this.photosRemainingEl.className = 'text-red-400 text-sm font-bold';
+                } else {
+                    this.captureBtn.disabled = false;
+                    this.photosRemainingEl.className = 'text-white text-sm font-bold';
                 }
-            }
-
-            stopCamera() {
-                if (this.stream) {
-                    this.stream.getTracks().forEach(track => track.stop());
-                }
-            }
-
-            switchCamera() {
-                this.facingMode = (this.facingMode === 'user') ? 'environment' : 'user';
-                this.startCamera();
             }
 
             async capturePhoto() {
-                if (this.isUploading || this.photoCount >= this.maxPhotos) {
-                    return;
-                }
-
-                this.isUploading = true;
-                this.showLoader();
-                this.captureBtn.disabled = true;
-
-                const canvas = document.createElement('canvas');
-                canvas.width = this.video.videoWidth;
-                canvas.height = this.video.videoHeight;
-                const ctx = canvas.getContext('2d');
+                if (this.isCapturing || this.photoCount >= this.maxPhotos) return;
                 
-                // Зеркальное отображение для селфи-камеры
-                if (this.facingMode === 'user') {
-                    ctx.translate(canvas.width, 0);
-                    ctx.scale(-1, 1);
-                }
-
-                ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
-                const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                this.isCapturing = true;
+                this.showCaptureLoading();
+                this.showInstantCapture();
 
                 try {
-                    await this.uploadPhoto(imageDataUrl);
-                    this.addPhotoToGallery(imageDataUrl);
+                    if (this.imageCapture) {
+                        console.log('Capturing with ImageCapture API');
+                        const photoBlob = await this.imageCapture.takePhoto();
+                        const imageBitmap = await createImageBitmap(photoBlob);
+
+                        this.canvas.width = imageBitmap.width;
+                        this.canvas.height = imageBitmap.height;
+                        this.ctx.drawImage(imageBitmap, 0, 0);
+                    } else {
+                        console.log('Capturing with canvas fallback');
+                        const videoWidth = this.videoStream.videoWidth;
+                        const videoHeight = this.videoStream.videoHeight;
+                        this.canvas.width = videoWidth;
+                        this.canvas.height = videoHeight;
+                        
+                        this.ctx.drawImage(this.videoStream, 0, 0, videoWidth, videoHeight);
+                    }
+
+                    const thumbnailUrl = this.canvas.toDataURL('image/jpeg', 0.6);
+                    this.addPhotoThumbnail(thumbnailUrl);
+                    
                     this.photoCount++;
-                    this.updatePhotoCount();
-                    this.showSuccess();
+                    this.updatePhotoCounter();
+                    this.updatePhotosRemaining();
+
+                    this.processAndUploadPhoto();
+
                 } catch (error) {
-                    console.error("Upload error:", error);
-                    this.showError('Ошибка загрузки фотографии. Попробуйте снова.');
+                    console.error('Capture failed:', error);
+                    this.showError('Ошибка при съёмке фото');
+                    this.photoCount--;
+                    this.updatePhotoCounter();
+                    this.updatePhotosRemaining();
                 } finally {
-                    this.isUploading = false;
-                    this.hideLoader();
-                    this.captureBtn.disabled = this.photoCount >= this.maxPhotos;
+                    this.isCapturing = false;
+                    this.hideCaptureLoading();
                 }
             }
 
-            async uploadPhoto(imageDataUrl) {
-                // Здесь должен быть код для загрузки в Telegram
-                // Например, через API или сторонний сервис
-                // В данном случае, это просто заглушка
-                return new Promise(resolve => setTimeout(resolve, 2000));
+            showInstantCapture() {
+                const flash = document.createElement('div');
+                flash.className = 'fixed inset-0 bg-white z-50 pointer-events-none';
+                flash.style.opacity = '0.8';
+                document.body.appendChild(flash);
+                
+                setTimeout(() => {
+                    flash.style.opacity = '0';
+                    setTimeout(() => document.body.removeChild(flash), 200);
+                }, 100);
             }
 
-            addPhotoToGallery(imageDataUrl) {
-                const photoWrapper = document.createElement('div');
-                photoWrapper.className = 'photo-mini slide-in-elegant';
+            async processAndUploadPhoto() {
+                try {
+                    this.addElegantWatermark();
+                    this.enhanceImage();
+                    const blob = await this.canvasToBlob(0.92);
+                    const uploadResult = await this.uploadPhoto(blob);
+                    
+                    if (uploadResult) {
+                        this.showSuccess();
+                    }
+                } catch (error) {
+                    console.error('Processing/Upload failed:', error);
+                    this.showError(`Ошибка отправки: ${error.message}. Попробуйте еще раз.`);
+                }
+            }
+
+            enhanceImage() {
+                const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                const data = imageData.data;
                 
-                const img = document.createElement('img');
-                img.src = imageDataUrl;
-                img.alt = 'Captured Photo';
-                img.className = 'w-full h-full object-cover';
+                const contrast = 1.1;
+                const brightness = 5;
                 
-                photoWrapper.appendChild(img);
-                this.photoGallery.prepend(photoWrapper);
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = Math.min(255, Math.max(0, (data[i] - 128) * contrast + 128 + brightness));
+                    data[i + 1] = Math.min(255, Math.max(0, (data[i + 1] - 128) * contrast + 128 + brightness));
+                    data[i + 2] = Math.min(255, Math.max(0, (data[i + 2] - 128) * contrast + 128 + brightness));
+                }
                 
-                photoWrapper.addEventListener('click', () => {
-                    this.viewerImage.src = imageDataUrl;
-                    this.photoViewer.classList.remove('hidden');
+                this.ctx.putImageData(imageData, 0, 0);
+            }
+
+            addElegantWatermark() {
+                const text = `${this.userName} • Илья & Алина • 28.08.2025`;
+                const fontSize = Math.max(24, this.canvas.width / 60);
+                
+                this.ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                this.ctx.strokeStyle = 'rgba(244, 63, 94, 0.8)';
+                this.ctx.lineWidth = Math.max(2, fontSize / 12);
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'bottom';
+                this.ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+                this.ctx.shadowBlur = fontSize / 2;
+                this.ctx.shadowOffsetX = 2;
+                this.ctx.shadowOffsetY = 2;
+                
+                const x = this.canvas.width / 2;
+                const y = this.canvas.height - (fontSize / 2);
+                
+                this.ctx.strokeText(text, x, y);
+                this.ctx.fillText(text, x, y);
+                
+                this.ctx.shadowColor = 'transparent';
+                this.ctx.shadowBlur = 0;
+                this.ctx.shadowOffsetX = 0;
+                this.ctx.shadowOffsetY = 0;
+            }
+
+            canvasToBlob(quality = 0.95) {
+                return new Promise(resolve => {
+                    this.canvas.toBlob(resolve, 'image/jpeg', quality);
                 });
             }
 
-            updatePhotoCount() {
-                const remaining = this.maxPhotos - this.photoCount;
-                this.photosRemainingSpan.textContent = `${remaining} осталось`;
-                this.photosTakenSpan.textContent = this.photoCount;
+            async uploadPhoto(blob) {
+                return new Promise((resolve, reject) => {
+                    try {
+                        this.showUploadProgress();
+        
+                        const formData = new FormData();
+                        const fileName = `${this.userName}_${Date.now()}.jpg`;
+                        const file = new File([blob], fileName, { 
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        
+                        formData.append('photo', file);
+                        formData.append('userName', this.userName);
+        
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', `${this.serverUrl}/send-photo`);
+        
+                        xhr.upload.onprogress = (event) => {
+                            if (event.lengthComputable) {
+                                const percentComplete = (event.loaded / event.total) * 100;
+                                this.updateUploadProgress(percentComplete);
+                            }
+                        };
+        
+                        xhr.onload = () => {
+                            this.hideUploadProgress();
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                const result = JSON.parse(xhr.responseText);
+                                console.log('Фото успешно отправлено:', result);
+                                resolve(result);
+                            } else {
+                                const error = new Error(`HTTP ${xhr.status}: ${xhr.responseText.substring(0, 100)}`);
+                                reject(error);
+                            }
+                        };
+        
+                        xhr.onerror = () => {
+                            this.hideUploadProgress();
+                            const error = new Error('Сетевая ошибка при отправке.');
+                            reject(error);
+                        };
+        
+                        xhr.send(formData);
+                        console.log(`Отправляем фото: ${fileName}, размер: ${blob.size} байт`);
+        
+                    } catch (error) {
+                        this.hideUploadProgress();
+                        reject(error);
+                    }
+                });
             }
 
-            toggleGallery() {
-                const isHidden = this.galleryWrapper.classList.contains('hidden');
-                if (isHidden) {
-                    this.galleryWrapper.classList.remove('hidden');
-                } else {
-                    this.galleryWrapper.classList.add('hidden');
+            addPhotoThumbnail(dataUrl) {
+                this.renderThumbnail(dataUrl);
+
+                if (!this.userName) return;
+                const photos = JSON.parse(localStorage.getItem(`weddingPhotos_${this.userName}`) || '[]');
+                photos.push(dataUrl);
+                localStorage.setItem(`weddingPhotos_${this.userName}`, JSON.stringify(photos));
+            }
+
+            renderThumbnail(dataUrl) {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'photo-mini slide-in-elegant relative overflow-hidden';
+                
+                const img = document.createElement('img');
+                img.src = dataUrl;
+                img.className = 'w-full h-full object-cover';
+
+                thumbnail.appendChild(img);
+                
+                thumbnail.addEventListener('click', () => {
+                    this.showPhotoPreview(dataUrl);
+                });
+
+                this.photoGallery.prepend(thumbnail);
+                this.photoGallery.scrollLeft = 0;
+            }
+
+            loadUserPhotos() {
+                if (!this.userName) return;
+                const photos = JSON.parse(localStorage.getItem(`weddingPhotos_${this.userName}`) || '[]');
+                photos.forEach(dataUrl => this.renderThumbnail(dataUrl));
+                this.photoCount = photos.length;
+                this.updatePhotoCounter();
+                this.updatePhotosRemaining();
+            }
+
+            showPhotoPreview(dataUrl) {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4';
+                modal.innerHTML = `
+                    <div class="relative max-w-4xl max-h-full">
+                        <img src="${dataUrl}" class="max-w-full max-h-full object-contain rounded-2xl">
+                        <button class="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75 transition">×</button>
+                    </div>
+                `;
+                
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal || e.target.tagName === 'BUTTON') {
+                        document.body.removeChild(modal);
+                    }
+                });
+                
+                document.body.appendChild(modal);
+            }
+
+            updatePhotoCounter() {
+                this.photosTakenEl.textContent = this.photoCount;
+            }
+
+            showCaptureLoading() {
+                this.cameraIcon.classList.add('hidden');
+                this.captureLoading.classList.remove('hidden');
+                this.captureBtn.disabled = true;
+            }
+
+            hideCaptureLoading() {
+                this.cameraIcon.classList.remove('hidden');
+                this.captureLoading.classList.add('hidden');
+                this.captureBtn.disabled = this.photoCount >= this.maxPhotos;
+            }
+
+            showUploadProgress() {
+                this.progressBar = document.createElement('div');
+                this.progressBar.className = 'progress-bar';
+                this.progressBar.style.width = '0%';
+                this.cameraScreen.appendChild(this.progressBar);
+            }
+
+            updateUploadProgress(percent) {
+                if (this.progressBar) {
+                  this.progressBar.style.width = `${percent}%`;
                 }
             }
-
-            showLoader() {
-                this.cameraIcon.classList.add('hidden');
-                this.cameraLoadingSpinner.classList.remove('hidden');
+          
+            hideUploadProgress() {
+                if (this.progressBar) {
+                  this.progressBar.remove();
+                  this.progressBar = null;
+                }
             }
-
-            hideLoader() {
-                this.cameraIcon.classList.remove('hidden');
-                this.cameraLoadingSpinner.classList.add('hidden');
-            }
-
+              
             showSuccess() {
                 this.successNotification.classList.remove('hidden');
                 setTimeout(() => {
